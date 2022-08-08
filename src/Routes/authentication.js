@@ -8,15 +8,22 @@ const { generateToken } = require('../Utils/generateToken.js')
 //register User
 router.post("/register", async (req, res) => {
     const {user_name, user_email, password} = req.body;
-
+    const adminUser = await User.findOrCreate({
+        where:{
+            user_email: "admin@gmail.com"
+        },defaults:{
+            user_name: "admin",
+            password: bcrypt.hashSync("admin123", 10),
+            isAdmin: true
+        }
+    })
     const [newUser, created] = await User.findOrCreate({
         where: {
             user_email: user_email
         },
         defaults:{
             user_name: user_name,
-            password: bcrypt.hashSync(password, 10),
-            user_name: user_name
+            password: bcrypt.hashSync(password, 10)
         }
     })
     try{
